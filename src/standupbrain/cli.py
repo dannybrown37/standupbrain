@@ -4,6 +4,7 @@ from datetime import datetime
 import click
 
 from standupbrain.git import get_git_commits
+from standupbrain.jira import make_jira_activity_summary
 from standupbrain.llm_init import init_llm
 from standupbrain.llm_prompt import (
     create_standup_summary_llm_prompt,
@@ -55,10 +56,12 @@ def generate(
         date = get_previous_workday()
         log.debug('Using date: %s', date)
     commits = get_git_commits(date, github_username)
-    if not commits:
-        log.error('No commits found for that date')
+
+    jira_summary = make_jira_activity_summary()
+    if not commits and not jira_summary:
+        log.error('No commits or Jira found for that %s', date)
         return
 
-    prompt = create_standup_summary_llm_prompt(commits)
+    prompt = create_standup_summary_llm_prompt(jira_summary, commits)
     summary = prompt_local_llm(prompt)
     click.echo(summary)

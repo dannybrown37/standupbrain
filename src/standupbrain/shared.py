@@ -1,6 +1,6 @@
 import datetime
 
-OLLAMA_MODEL = 'qwen2.5:3b'
+OLLAMA_MODEL = 'llama3.2:3b'
 
 
 def get_previous_workday() -> datetime:
