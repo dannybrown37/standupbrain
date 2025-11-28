@@ -71,7 +71,7 @@ def format_activity_for_llm(data: dict, target_date: datetime) -> str:
         return ''
 
     log.debug('Formatting Jira activity for LLM')
-    issues = []
+    summaries = []
 
     for issue in issues:
         fields = issue['fields']
@@ -94,9 +94,10 @@ def format_activity_for_llm(data: dict, target_date: datetime) -> str:
             issue_summary = f'[{key}] {summary}\nStatus: {status}\n'
             if description:
                 issue_summary += f'Description: {description}\n'
-            issue_summary += 'Comments:\n' + '\n'.join(comments_on_date)
-            issues.append(issue_summary)
+            if comments_on_date:
+                issue_summary += 'Comments:\n' + '\n'.join(comments_on_date)
+            summaries.append(issue_summary)
 
-    result = '\n\n'.join(issues)
+    result = '\n\n'.join(summaries)
     log.debug('Jira summary:\n%s', result)
     return result
