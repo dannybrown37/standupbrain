@@ -1,12 +1,17 @@
 import json
+import logging
 import subprocess
 from datetime import datetime
 from pathlib import Path
 
+log = logging.getLogger(__name__)
+
 
 def get_git_commits(date: datetime, github_username: str) -> list[dict]:
     date_str = date.strftime('%Y-%m-%d')
+    log.debug('Getting commits for %s', date_str)
     affected_repos = get_affected_repos(date_str, github_username)
+    log.debug('Affected repos: %s', affected_repos)
     return get_git_commits_local(affected_repos, date_str, github_username)
 
 
@@ -72,4 +77,5 @@ def get_git_commits_local(
         if result.stdout:
             all_commits.append({'repo': repo.name, 'output': result.stdout})
 
+    log.debug('Found %d commits', len(all_commits))
     return all_commits
