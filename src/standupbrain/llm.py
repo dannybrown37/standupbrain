@@ -35,15 +35,11 @@ def ensure_ollama_running() -> bool:
         return True
     except subprocess.CalledProcessError:
         print('Starting Ollama server...')
-        print('Starting Ollama server...')
-        proc = subprocess.Popen(
+        subprocess.Popen(
             ['ollama', 'serve'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
         )
-        time.sleep(3)
-        print(proc.stderr.read() if proc.stderr else 'No stderr')
 
         for _ in range(10):
             time.sleep(1)
@@ -72,12 +68,12 @@ def install_ollama() -> bool:
     elif sys.platform.startswith('linux'):
         print('Installing Ollama via official script...')
         try:
-            subprocess.run(
+            result = subprocess.run(
                 ['curl', '-fsSL', 'https://ollama.com/install.sh'],
-                stdout=subprocess.PIPE,
+                capture_output=True,
                 check=True,
             )
-            subprocess.run(['sh', '-'], input=subprocess.PIPE, check=True)
+            subprocess.run(['sh', '-'], input=result.stdout, check=True)
             return True
         except subprocess.CalledProcessError:
             return False
