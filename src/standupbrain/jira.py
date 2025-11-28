@@ -42,7 +42,6 @@ def get_my_jira_activity(date: datetime) -> dict:
         params=params,
         auth=HTTPBasicAuth(email, api_token),
     )
-    log.debug(response.text)
     response.raise_for_status()
     return response.json()
 

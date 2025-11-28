@@ -29,6 +29,7 @@ def init() -> None:
     init_jira()
 
 
+# region Temp
 @main.command()
 @click.option(
     '--date',
@@ -40,6 +41,9 @@ def jira(date: str) -> None:
     logging.getLogger().setLevel(logging.DEBUG)
     summary = make_jira_activity_summary(date)
     click.echo(summary)
+
+
+# endregion
 
 
 @main.command()
