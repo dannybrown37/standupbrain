@@ -17,6 +17,7 @@ POPULAR_MODELS = {
     'llama3.3:8b': 'Balanced performance for everyday use, good reasoning (8GB)',
     'llama3.1:70b': 'Most capable general model, enterprise-grade (40GB+)',
     'mistral:7b': 'Fast and accurate all-rounder, excellent for summaries (8GB)',
+    'qwen2.5:3b': 'Highly efficient model, strong general performance (4GB)',
     'qwen2.5:7b': 'Strong multilingual support, 128K context window (8GB)',
     'deepseek-r1:8b': 'Advanced reasoning and math capabilities (8GB)',
     'deepseek-coder:6.7b': 'Specialized for code generation, 20+ languages (6GB)',
