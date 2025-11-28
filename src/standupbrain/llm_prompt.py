@@ -1,6 +1,10 @@
+import logging
 import subprocess
 
 from standupbrain.shared import OLLAMA_MODEL
+
+log = logging.getLogger(__name__)
+
 
 PROMPT = """
 You are a helpful assistant that reminds me what I did the prior work
@@ -21,6 +25,7 @@ def create_standup_summary_llm_prompt(jira_summary: str, commits: list[dict]) ->
 
 
 def prompt_local_llm(prompt: str) -> str:
+    log.debug('Prompting local LLM with string size: %s', len(prompt))
     result = subprocess.run(
         ['ollama', 'run', OLLAMA_MODEL, prompt],
         check=True,

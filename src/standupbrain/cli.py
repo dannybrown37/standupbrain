@@ -44,6 +44,7 @@ def jira(date: str) -> None:
     summary = make_jira_activity_summary(date)
     click.echo(summary)
 
+
 @main.command()
 @click.option(
     '--date',
