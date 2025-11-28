@@ -12,17 +12,26 @@ def get_config_path() -> Path:
 
 def init_jira() -> None:
     click.echo('Setting up Jira integration...\n')
+    credentials = get_jira_credentials()
+    url, email, api_token = None, None, None
+    if credentials:
+        click.echo(f'✓ Jira credentials already set for {credentials[1]}')
+        if not click.confirm('Review/overwrite existing credentials?', default=False):
+            click.echo('Keeping existing credentials')
+            return
+        url, email, api_token = credentials
 
     root_url = click.prompt(
         'Jira root URL (e.g., https://yourcompany.atlassian.net)',
         type=str,
+        default=url,
     ).rstrip('/').strip()
 
-    email = click.prompt('Jira email', type=str).strip()
+    email = click.prompt('Jira email', type=str, default=email).strip()
 
     api_token = click.prompt(
         'Jira API token (https://id.atlassian.com/manage-profile/security/api-tokens)',
-        hide_input=True,
+        default=api_token,
     ).strip()
 
     if click.confirm('\nSave credentials?', default=True):
@@ -34,8 +43,6 @@ def init_jira() -> None:
         }))
         config_path.chmod(0o600)
         click.echo(f'✓ Saved to {config_path}')
-
-    return {'root_url': root_url, 'email': email}
 
 
 def get_jira_credentials() -> tuple[str, str, str] | None:
