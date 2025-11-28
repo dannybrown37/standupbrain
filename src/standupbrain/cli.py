@@ -5,8 +5,9 @@ import click
 
 from standupbrain.git import get_git_commits
 from standupbrain.jira import make_jira_activity_summary
+from standupbrain.jira_init import init_jira
 from standupbrain.llm_init import init_llm
-from standupbrain.llm_prompt import (
+from standupbrain.llm import (
     create_standup_summary_llm_prompt,
     prompt_local_llm,
 )
@@ -31,6 +32,7 @@ def main(verbosity: str) -> None:
 @main.command()
 def init() -> None:
     init_llm()
+    init_jira()
 
 
 @main.command()

@@ -6,6 +6,9 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "click>=8.3.1",
+    "cryptography>=46.0.3",
+    "keyring>=25.7.0",
+    "keyrings-alt>=5.0.2",
     "requests>=2.32.5",
 ]
 
