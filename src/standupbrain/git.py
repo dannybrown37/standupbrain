@@ -33,7 +33,7 @@ def get_affected_repos(date_str: str, github_username: str) -> set[str]:
             events, end_idx = decoder.raw_decode(raw, idx)
             for event in events:
                 if (
-                    event['type'] == 'PushEvent'
+                    event['type'] in ('PushEvent', 'PullRequestEvent')
                     and event['created_at'][:10] == date_str
                 ):
                     repo_name = event['repo']['name'].split('/')[-1]
