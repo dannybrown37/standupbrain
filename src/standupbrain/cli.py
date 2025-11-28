@@ -20,11 +20,18 @@ def init() -> None:
 @main.command()
 @click.option(
     '--date',
+    '-d',
     type=click.DateTime(formats=['%Y-%m-%d']),
     help='Specific date to generate update for (YYYY-MM-DD)',
 )
-def generate(date: datetime | None) -> None:
+@click.option(
+    '--github-username',
+    '-g',
+    '-u',
+    help='GitHub username for the search',
+)
+def generate(date: datetime | None, github_username: str) -> None:
     if not date:
         date = get_previous_workday()
-    commits = get_git_commits(date)
+    commits = get_git_commits(date, github_username)
     pprint(commits)

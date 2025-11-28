@@ -85,6 +85,9 @@ ignore = [
 inline-quotes = "single"
 
 [tool.ruff.per-file-ignores]
+"src/standupbrain/git.py" = [
+    "PLW1510",
+]
 "src/standupbrain/llm.py" = [
     "TRY300",  # these seem well placed to me
 ]
