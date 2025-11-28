@@ -88,6 +88,6 @@ inline-quotes = "single"
 "src/standupbrain/git.py" = [
     "PLW1510",
 ]
-"src/standupbrain/llm.py" = [
+"src/standupbrain/llm_init.py" = [
     "TRY300",  # these seem well placed to me
 ]
