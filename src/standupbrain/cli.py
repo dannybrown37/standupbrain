@@ -37,6 +37,7 @@ def init() -> None:
     help='Specific date to generate update for (YYYY-MM-DD)',
 )
 def jira(date: str) -> None:
+    logging.getLogger().setLevel(logging.DEBUG)
     summary = make_jira_activity_summary(date)
     click.echo(summary)
 

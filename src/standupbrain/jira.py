@@ -26,7 +26,6 @@ def get_my_jira_activity(date: datetime) -> dict:
         sys.exit(1)
 
     base_url, email, api_token = credentials
-    auth = HTTPBasicAuth(email, api_token)
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -41,7 +40,7 @@ def get_my_jira_activity(date: datetime) -> dict:
         urljoin(base_url, '/rest/api/3/search/jql'),
         headers=headers,
         params=params,
-        auth=auth,
+        auth=HTTPBasicAuth(email, api_token),
     )
     log.debug(response.text)
     response.raise_for_status()
@@ -65,11 +64,16 @@ def extract_text_from_adf(content: list) -> str:
 
 def format_activity_for_llm(data: dict, target_date: datetime) -> str:
     """Format Jira activity for LLM prompt"""
+    issues = data.get('issues', [])
+    if not issues:
+        log.debug('No Jira activity found for %s', target_date)
+        return ''
+
     log.debug('Formatting Jira activity for LLM')
     issues = []
     target_date = target_date.strftime('%Y-%m-%d')
 
-    for issue in data.get('issues', []):
+    for issue in issues:
         fields = issue['fields']
         key = issue['key']
         summary = fields['summary']
