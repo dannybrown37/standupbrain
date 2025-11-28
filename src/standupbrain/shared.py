@@ -1,6 +1,13 @@
 import datetime
+from pathlib import Path
 
 OLLAMA_MODEL = 'llama3.2:3b'
+
+
+def get_config_path() -> Path:
+    config_dir = Path.home() / '.config' / 'standupbrain'
+    config_dir.mkdir(parents=True, exist_ok=True)
+    return config_dir / 'credentials.json'
 
 
 def get_previous_workday() -> datetime:

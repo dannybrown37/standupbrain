@@ -12,6 +12,7 @@ from standupbrain.llm import (
     create_standup_summary_llm_prompt,
     prompt_local_llm,
 )
+from standupbrain.preferences_init import init_preferences
 from standupbrain.shared import get_previous_workday
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -25,6 +26,7 @@ def main() -> None: ...
 
 @main.command()
 def init() -> None:
+    init_preferences()
     init_llm()
     init_jira()
 

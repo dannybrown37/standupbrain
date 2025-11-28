@@ -1,13 +1,8 @@
-from pathlib import Path
 import json
 
 import click
 
-
-def get_config_path() -> Path:
-    config_dir = Path.home() / '.config' / 'standupbrain'
-    config_dir.mkdir(parents=True, exist_ok=True)
-    return config_dir / 'credentials.json'
+from standupbrain.shared import get_config_path
 
 
 def init_jira() -> None:
