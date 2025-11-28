@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+import subprocess
 
 import click
 
@@ -14,6 +15,7 @@ from standupbrain.llm import (
 from standupbrain.shared import get_previous_workday
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
+logging.getLogger('requests').setLevel(logging.INFO)
 log = logging.getLogger(__name__)
 
 
@@ -75,10 +77,22 @@ def generate(
 ) -> None:
     if verbose or dry_run:
         logging.getLogger().setLevel(logging.DEBUG)
+
     if not date:
         log.debug('No date provided, using previous workday')
         date = get_previous_workday()
         log.debug('Using date: %s', date)
+
+    if not github_username:
+        result = subprocess.run(
+            ['gh', 'api', 'user', '--jq', '.login'],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        github_username = result.stdout.strip()
+        log.debug('No GitHub username, using local GitHub username %s', github_username)
+
     commits = get_git_commits(date, github_username)
 
     jira_summary = make_jira_activity_summary(date)
