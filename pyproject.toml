@@ -7,13 +7,11 @@ requires-python = ">=3.12"
 dependencies = [
     "click>=8.3.1",
     "requests>=2.32.5",
-
-    "pytest>=9.0.1",  # TODO -- remove this
 ]
 
 [dependency-groups]
 dev = [
-    #"pytest>=9.0.1",  # TODO -- put it back here
+    "pytest>=9.0.1",
     "ruff==0.14.6",
 ]
 
