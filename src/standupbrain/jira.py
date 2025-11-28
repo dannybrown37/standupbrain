@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import os
 from urllib.parse import urljoin
@@ -8,13 +9,13 @@ from requests.auth import HTTPBasicAuth
 log = logging.getLogger(__name__)
 
 
-def make_jira_activity_summary(date: str) -> str:
+def make_jira_activity_summary(date: datetime) -> str:
     """Entry point function for CLI to get Jira activity summary"""
     response = get_my_jira_activity(date)
     return format_activity_for_llm(response, date)
 
 
-def get_my_jira_activity(date: str) -> dict:
+def get_my_jira_activity(date: datetime) -> dict:
     """Query current user's Jira activity (requires env vars to be set)"""
     base_url = os.environ['JIRA_URL']
     email = os.environ['JIRA_EMAIL']
@@ -24,7 +25,7 @@ def get_my_jira_activity(date: str) -> dict:
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
-    jql = f'assignee = currentUser() AND updated >= "{date}"'
+    jql = f'assignee = currentUser() AND updated >= "{date.strftime("%Y-%m-%d")}"'
     params = {
         'jql': jql,
         'fields': 'summary,description,status,updated,comment',
@@ -56,10 +57,11 @@ def extract_text_from_adf(content: list) -> str:
     return ''.join(text_parts)
 
 
-def format_activity_for_llm(data: dict, target_date: str) -> str:
+def format_activity_for_llm(data: dict, target_date: datetime) -> str:
     """Format Jira activity for LLM prompt"""
     log.debug('Formatting Jira activity for LLM')
     issues = []
+    target_date = target_date.strftime('%Y-%m-%d')
 
     for issue in data.get('issues', []):
         fields = issue['fields']

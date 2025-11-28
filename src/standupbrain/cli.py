@@ -40,6 +40,17 @@ def init() -> None:
     type=click.DateTime(formats=['%Y-%m-%d']),
     help='Specific date to generate update for (YYYY-MM-DD)',
 )
+def jira(date: str) -> None:
+    summary = make_jira_activity_summary(date)
+    click.echo(summary)
+
+@main.command()
+@click.option(
+    '--date',
+    '-d',
+    type=click.DateTime(formats=['%Y-%m-%d']),
+    help='Specific date to generate update for (YYYY-MM-DD)',
+)
 @click.option(
     '--github-username',
     '--author-email',
@@ -57,9 +68,9 @@ def generate(
         log.debug('Using date: %s', date)
     commits = get_git_commits(date, github_username)
 
-    jira_summary = make_jira_activity_summary()
+    jira_summary = make_jira_activity_summary(date)
     if not commits and not jira_summary:
-        log.error('No commits or Jira found for that %s', date)
+        log.error('No commits or Jira found for %s', date)
         return
 
     prompt = create_standup_summary_llm_prompt(jira_summary, commits)
