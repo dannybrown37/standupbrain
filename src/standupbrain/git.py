@@ -1,11 +1,16 @@
 import json
-from datetime import datetime
 import subprocess
+from datetime import datetime
+from pathlib import Path
 
 
 def get_git_commits(date: datetime, github_username: str) -> list[dict]:
     date_str = date.strftime('%Y-%m-%d')
+    affected_repos = get_affected_repos(date_str, github_username)
+    return get_git_commits_local(affected_repos, date_str, github_username)
 
+
+def get_affected_repos(date_str: str, github_username: str) -> set[str]:
     events_result = subprocess.run(
         ['gh', 'api', f'/users/{github_username}/events', '--paginate'],
         capture_output=True,
@@ -26,28 +31,45 @@ def get_git_commits(date: datetime, github_username: str) -> list[dict]:
                     event['type'] == 'PushEvent'
                     and event['created_at'][:10] == date_str
                 ):
-                    affected_repos.add(event['repo']['name'])
+                    repo_name = event['repo']['name'].split('/')[-1]
+                    affected_repos.add(repo_name)
             idx = end_idx
         except json.JSONDecodeError:
             break
 
+    return affected_repos
+
+
+def get_git_commits_local(
+    affected_repos: set[str],
+    date_str: str,
+    github_username: str,
+) -> list[dict]:
+    projects_dir = Path.home() / 'projects'
     all_commits = []
-    for repo in affected_repos:
-        commits_result = subprocess.run(
-            ['gh', 'api', f'/repos/{repo}/commits', '-f', 'per_page=100'],
+
+    for repo in projects_dir.iterdir():
+        if not (repo / '.git').exists() or repo.name not in affected_repos:
+            continue
+
+        result = subprocess.run(
+            [
+                'git',
+                '-C',
+                str(repo),
+                'log',
+                '--all',
+                f'--since={date_str} 00:00',
+                f'--until={date_str} 23:59',
+                f'--author={github_username}',
+                '--format=%H|%s|%b',
+                '--patch',
+            ],
             capture_output=True,
             text=True,
         )
 
-        if commits_result.returncode == 0 and commits_result.stdout.strip():
-            commits = json.loads(commits_result.stdout)
-            for commit in commits:
-                commit_date = commit['commit']['author']['date'][:10]
-                commit_author = commit['commit']['author']['name']
-                if (
-                    commit_date == date_str
-                    and commit_author == github_username
-                ):
-                    all_commits.append(commit)
+        if result.stdout:
+            all_commits.append({'repo': repo.name, 'output': result.stdout})
 
     return all_commits
