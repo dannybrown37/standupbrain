@@ -18,15 +18,7 @@ log = logging.getLogger(__name__)
 
 
 @click.group()
-@click.option(
-    '--verbosity',
-    '-v',
-    type=click.Choice(['debug', 'info', 'warning', 'error', 'critical']),
-    help='Verbosity level',
-)
-def main(verbosity: str) -> None:
-    if verbosity:
-        logging.getLogger().setLevel(verbosity.upper())
+def main() -> None: ...
 
 
 @main.command()
@@ -55,16 +47,34 @@ def jira(date: str) -> None:
     help='Specific date to generate update for (YYYY-MM-DD)',
 )
 @click.option(
+    '--dry-run',
+    '--dry_run',
+    is_flag=True,
+    default=False,
+    help='Do not actually prompt the LLM, just query the APIs and print the prompt',
+)
+@click.option(
     '--github-username',
     '--author-email',
     '-g',
     '-u',
     help='GitHub username or email for the search',
 )
+@click.option(
+    '--verbose',
+    '-v',
+    is_flag=True,
+    default=False,
+    help='High verbosity for debugging',
+)
 def generate(
     date: datetime | None,
+    dry_run: bool,
     github_username: str,
+    verbose: bool,
 ) -> None:
+    if verbose or dry_run:
+        logging.getLogger().setLevel(logging.DEBUG)
     if not date:
         log.debug('No date provided, using previous workday')
         date = get_previous_workday()
@@ -77,5 +87,10 @@ def generate(
         return
 
     prompt = create_standup_summary_llm_prompt(jira_summary, commits)
+    if dry_run:
+        log.debug('Prompt size in chars: %s', len(prompt))
+        click.echo('Exiting early, not prompting LLM')
+        return
+
     summary = prompt_local_llm(prompt)
     click.echo(summary)

@@ -1,10 +1,14 @@
 from datetime import datetime
 import logging
-import os
+import sys
 from urllib.parse import urljoin
 
 import requests
 from requests.auth import HTTPBasicAuth
+
+from standupbrain.jira_init import get_jira_credentials
+
+
 
 log = logging.getLogger(__name__)
 
@@ -17,9 +21,12 @@ def make_jira_activity_summary(date: datetime) -> str:
 
 def get_my_jira_activity(date: datetime) -> dict:
     """Query current user's Jira activity (requires env vars to be set)"""
-    base_url = os.environ['JIRA_URL']
-    email = os.environ['JIRA_EMAIL']
-    api_token = os.environ['JIRA_API_TOKEN']
+    credentials = get_jira_credentials()
+    if not credentials:
+        log.error('Run `standupbrain init` first')
+        sys.exit(1)
+
+    base_url, email, api_token = credentials
     auth = HTTPBasicAuth(email, api_token)
     headers = {
         'Accept': 'application/json',
