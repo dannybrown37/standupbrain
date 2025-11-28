@@ -64,6 +64,7 @@ def extract_text_from_adf(content: list) -> str:
 
 def format_activity_for_llm(data: dict, target_date: datetime) -> str:
     """Format Jira activity for LLM prompt"""
+    target_date = target_date.strftime('%Y-%m-%d')
     issues = data.get('issues', [])
     if not issues:
         log.debug('No Jira activity found for %s', target_date)
@@ -71,7 +72,6 @@ def format_activity_for_llm(data: dict, target_date: datetime) -> str:
 
     log.debug('Formatting Jira activity for LLM')
     issues = []
-    target_date = target_date.strftime('%Y-%m-%d')
 
     for issue in issues:
         fields = issue['fields']
