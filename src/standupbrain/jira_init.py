@@ -46,8 +46,8 @@ def init_jira() -> None:
                     'root_url': root_url,
                     'email': email,
                     'api_token': api_token,
-                }
-            )
+                },
+            ),
         )
         config_path.chmod(0o600)
         click.echo(f'✓ Saved to {config_path}')

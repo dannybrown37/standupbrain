@@ -92,15 +92,13 @@ ignore = [
     "S607",  # So many Bash calls
     "S113",  # requests calls without timeouts are fine
     "PLR0913",  # sometimes tests need 6+ fixtures
+    "FBT001",  # bools are great
 ]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
 
 [tool.ruff.per-file-ignores]
-"src/standupbrain/cli.py" = [
-    "FBT001",  # it's literally a CLI flag
-]
 "src/standupbrain/git.py" = [
     "PLW1510",
 ]
