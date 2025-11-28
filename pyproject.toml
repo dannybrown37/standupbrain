@@ -18,7 +18,7 @@ standupbrain = "standupbrain.cli:main"
 
 
 [tool.ruff]
-line-length = 79
+line-length = 88
 show-fixes = true
 target-version = "py311"
 
