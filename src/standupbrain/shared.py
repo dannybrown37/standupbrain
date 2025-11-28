@@ -26,5 +26,6 @@ def get_previous_workday() -> datetime:
     return today - datetime.timedelta(days=1)
 
 
-_preferences = get_preferences()
-OLLAMA_MODEL = _preferences['ollama_model'] if _preferences else 'llama3.2:3b'
+def get_ollama_model() -> str:
+    _preferences = get_preferences()
+    return _preferences['ollama_model'] if _preferences else 'llama3.2:3b'

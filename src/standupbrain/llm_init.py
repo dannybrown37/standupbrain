@@ -7,9 +7,25 @@ import time
 
 import click
 
-from standupbrain.shared import OLLAMA_MODEL, get_config_path, get_preferences
+from standupbrain.shared import get_ollama_model, get_config_path, get_preferences
 
 log = logging.getLogger(__name__)
+
+
+POPULAR_MODELS = {
+    'llama3.2:3b': 'Fast general-purpose model, great for quick tasks w/ low GBs (4GB)',
+    'llama3.3:8b': 'Balanced performance for everyday use, good reasoning (8GB)',
+    'llama3.1:70b': 'Most capable general model, enterprise-grade (40GB+)',
+    'mistral:7b': 'Fast and accurate all-rounder, excellent for summaries (8GB)',
+    'qwen2.5:7b': 'Strong multilingual support, 128K context window (8GB)',
+    'deepseek-r1:8b': 'Advanced reasoning and math capabilities (8GB)',
+    'deepseek-coder:6.7b': 'Specialized for code generation, 20+ languages (6GB)',
+    'qwen2.5-coder:7b': 'Modern coding assistant, handles cross-file changes (8GB)',
+    'phi4:14b': 'Efficient reasoning model from Microsoft, edge-optimized (14GB)',
+    'gemma2:9b': 'Google model with flash attention, fast and conversational (10GB)',
+    'codellama:13b': 'Solid code completion and debugging (16GB)',
+    'tinyllama:1.1b': 'Ultra-lightweight for basic tasks on any hardware (1GB)',
+}
 
 
 def init_llm() -> None:
@@ -31,7 +47,7 @@ def init_llm() -> None:
         log.error('Failed to set preferences.')
         sys.exit(1)
 
-    if not pull_model():
+    if not pull_model(get_ollama_model()):
         log.error('Failed to pull model.')
         sys.exit(1)
 
@@ -94,7 +110,7 @@ def install_ollama() -> bool:
         return False
 
 
-def pull_model(model: str = OLLAMA_MODEL) -> bool:
+def pull_model(model: str) -> bool:
     log.info('Pulling %s...', model)
     try:
         subprocess.run(['ollama', 'pull', model], check=True)
@@ -118,34 +134,48 @@ def get_available_ollama_models() -> list[dict[str, str]]:
     return models
 
 
+def get_installed_models() -> set[str]:
+    try:
+        result = subprocess.run(
+            ['ollama', 'list'],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        installed = set()
+        for line in result.stdout.strip().split('\n')[1:]:
+            parts = line.split()
+            if parts:
+                installed.add(parts[0])
+        return installed
+    except subprocess.CalledProcessError:
+        return set()
+
+
 def init_preferences() -> bool:
     click.echo('Setting up preferences...\n')
     preferences = get_preferences()
-    ollama_model = None
+
     if preferences:
         click.echo(f'✓ Preferences already set (model: {preferences["ollama_model"]})')
         if not click.confirm('Review/overwrite existing preferences?', default=False):
             click.echo('Keeping existing preferences')
-            return False
-        ollama_model = preferences['ollama_model']
+            return True
 
-    models = get_available_ollama_models()
-    if not models:
-        click.echo(
-            '⚠ No Ollama models found. Pull a model first with: ollama pull <model>',
-        )
-        return False
+    installed = get_installed_models()
 
-    click.echo('Available models:')
-    for idx, model in enumerate(models, 1):
-        click.echo(f'  {idx}. {model["name"]} ({model["size"]})')
+    click.echo('Popular models:')
+    models = list(POPULAR_MODELS.items())
+    for idx, (name, desc) in enumerate(models, 1):
+        status = '✓' if name in installed else ' '
+        click.echo(f'  {status} {idx:2}. {name:20} - {desc}')
 
     choice = click.prompt(
         '\nSelect model number',
         type=click.IntRange(1, len(models)),
-        default=1,
+        default=2,
     )
-    ollama_model = models[choice - 1]['name']
+    ollama_model = models[choice - 1][0]
 
     if click.confirm(f'\nSave {ollama_model} as default?', default=True):
         config_path = get_config_path()
