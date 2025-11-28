@@ -21,11 +21,15 @@ def init_jira() -> None:
             return
         url, email, api_token = credentials
 
-    root_url = click.prompt(
-        'Jira root URL (e.g., https://yourcompany.atlassian.net)',
-        type=str,
-        default=url,
-    ).rstrip('/').strip()
+    root_url = (
+        click.prompt(
+            'Jira root URL (e.g., https://yourcompany.atlassian.net)',
+            type=str,
+            default=url,
+        )
+        .rstrip('/')
+        .strip()
+    )
 
     email = click.prompt('Jira email', type=str, default=email).strip()
 
@@ -36,11 +40,15 @@ def init_jira() -> None:
 
     if click.confirm('\nSave credentials?', default=True):
         config_path = get_config_path()
-        config_path.write_text(json.dumps({
-            'root_url': root_url,
-            'email': email,
-            'api_token': api_token,
-        }))
+        config_path.write_text(
+            json.dumps(
+                {
+                    'root_url': root_url,
+                    'email': email,
+                    'api_token': api_token,
+                }
+            )
+        )
         config_path.chmod(0o600)
         click.echo(f'✓ Saved to {config_path}')
 

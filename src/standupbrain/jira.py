@@ -9,7 +9,6 @@ from requests.auth import HTTPBasicAuth
 from standupbrain.jira_init import get_jira_credentials
 
 
-
 log = logging.getLogger(__name__)
 
 
