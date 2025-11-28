@@ -1,28 +1,33 @@
+import logging
 import shutil
 import subprocess
 import sys
 import time
 
+from standupbrain.shared import OLLAMA_MODEL
+
+log = logging.getLogger(__name__)
+
 
 def init_llm() -> None:
     if not check_ollama_installed():
-        print('Ollama not found. Attempting installation...')
+        log.info('Ollama not found. Attempting installation...')
         if not install_ollama():
-            print(
+            log.info(
                 'Failed to install Ollama automatically.\n'
                 'Please install manually: https://ollama.com/download',
             )
             sys.exit(1)
-        print('Ollama installed successfully.')
+        log.info('Ollama installed successfully.')
 
     if not ensure_ollama_running():
         sys.exit(1)
 
     if not pull_model():
-        print('Failed to pull model.')
+        log.info('Failed to pull model.')
         sys.exit(1)
 
-    print('LLM setup complete.')
+    log.info('LLM setup complete.')
 
 
 def check_ollama_installed() -> bool:
@@ -34,7 +39,7 @@ def ensure_ollama_running() -> bool:
         subprocess.run(['ollama', 'list'], check=True, capture_output=True)
         return True
     except subprocess.CalledProcessError:
-        print('Starting Ollama server...')
+        log.info('Starting Ollama server...')
         subprocess.Popen(
             ['ollama', 'serve'],
             stdout=subprocess.DEVNULL,
@@ -53,20 +58,20 @@ def ensure_ollama_running() -> bool:
             except subprocess.CalledProcessError:
                 continue
 
-        print('Failed to start Ollama server')
+        log.info('Failed to start Ollama server')
         return False
 
 
 def install_ollama() -> bool:
     if sys.platform == 'darwin':
-        print('Installing Ollama via Homebrew...')
+        log.info('Installing Ollama via Homebrew...')
         try:
             subprocess.run(['brew', 'install', 'ollama'], check=True)
             return True
         except (subprocess.CalledProcessError, FileNotFoundError):
             return False
     elif sys.platform.startswith('linux'):
-        print('Installing Ollama via official script...')
+        log.info('Installing Ollama via official script...')
         try:
             result = subprocess.run(
                 ['curl', '-fsSL', 'https://ollama.com/install.sh'],
@@ -81,8 +86,8 @@ def install_ollama() -> bool:
         return False
 
 
-def pull_model(model: str = 'qwen2.5:3b') -> bool:
-    print(f'Pulling {model}...')
+def pull_model(model: str = OLLAMA_MODEL) -> bool:
+    log.info('Pulling %s...', model)
     try:
         subprocess.run(['ollama', 'pull', model], check=True)
         return True
