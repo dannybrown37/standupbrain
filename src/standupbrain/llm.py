@@ -1,7 +1,6 @@
 import shutil
 import subprocess
 import sys
-from pathlib import Path
 import time
 
 
@@ -11,7 +10,7 @@ def init_llm() -> None:
         if not install_ollama():
             print(
                 'Failed to install Ollama automatically.\n'
-                'Please install manually: https://ollama.com/download'
+                'Please install manually: https://ollama.com/download',
             )
             sys.exit(1)
         print('Ollama installed successfully.')
@@ -50,7 +49,9 @@ def ensure_ollama_running() -> bool:
             time.sleep(1)
             try:
                 subprocess.run(
-                    ['ollama', 'list'], check=True, capture_output=True
+                    ['ollama', 'list'],
+                    check=True,
+                    capture_output=True,
                 )
                 return True
             except subprocess.CalledProcessError:
