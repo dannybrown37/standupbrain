@@ -1,7 +1,7 @@
 import json
 import click
 
-from standupbrain.shared import get_config_path
+from standupbrain.shared import get_config_path, get_preferences
 
 
 def init_preferences() -> None:
@@ -32,12 +32,3 @@ def init_preferences() -> None:
         config_path.write_text(json.dumps(existing))
         config_path.chmod(0o600)
         click.echo(f'✓ Saved to {config_path}')
-
-
-def get_preferences() -> dict | None:
-    config_path = get_config_path()
-    if not config_path.exists():
-        return None
-
-    data = json.loads(config_path.read_text())
-    return data if 'ollama_model' in data else None
