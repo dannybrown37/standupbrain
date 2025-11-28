@@ -3,7 +3,7 @@ import subprocess
 from standupbrain.shared import OLLAMA_MODEL
 
 
-def format_prompt_for_llm(commits: list[dict]) -> str:
+def create_standup_summary_llm_prompt(commits: list[dict]) -> str:
     content = (
         'I am including the commits from my last workday here.'
         'Your task is to create a summary of the commits for each repo that '
@@ -19,7 +19,7 @@ def format_prompt_for_llm(commits: list[dict]) -> str:
     return content
 
 
-def generate_standup_summary(prompt: str) -> str:
+def prompt_local_llm(prompt: str) -> str:
     result = subprocess.run(
         ['ollama', 'run', OLLAMA_MODEL, prompt],
         check=True,

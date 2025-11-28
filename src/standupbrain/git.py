@@ -1,5 +1,7 @@
 import json
 import logging
+from pprint import pformat
+import shlex
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -12,10 +14,22 @@ def get_git_commits(date: datetime, github_username: str) -> list[dict]:
     log.debug('Getting commits for %s', date_str)
     affected_repos = get_affected_repos(date_str, github_username)
     log.debug('Affected repos: %s', affected_repos)
-    return get_git_commits_local(affected_repos, date_str, github_username)
+    commits = get_git_commits_local(affected_repos, date_str, github_username)
+    log.debug(pformat(commits))
+    log.debug('Found %d commits', len(commits))
+    return commits
 
 
 def get_affected_repos(date_str: str, github_username: str) -> set[str]:
+    if not github_username or '@' in github_username:
+        github_username = subprocess.run(
+            ['gh', 'api', '/user', '--jq', '.login'],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        log.debug('Using current user: %s', github_username)
+
     events_result = subprocess.run(
         ['gh', 'api', f'/users/{github_username}/events', '--paginate'],
         capture_output=True,
@@ -53,23 +67,28 @@ def get_git_commits_local(
     projects_dir = Path.home() / 'projects'
     all_commits = []
 
+    log.debug('Processing %d repos', len(affected_repos))
     for repo in projects_dir.iterdir():
+        log.debug('Processing %s', repo.name)
         if not (repo / '.git').exists() or repo.name not in affected_repos:
+            log.debug('Excluding %s', repo.name)
             continue
 
+        command = [
+            'git',
+            '-C',
+            str(repo),
+            'log',
+            '--branches',
+            f'--since={date_str} 00:00',
+            f'--until={date_str} 23:59',
+            f'--author={github_username}',
+            '--format=%H|%s|%b',
+            '--patch',
+        ]
+        log.debug('Running command: %s', ' '.join(shlex.quote(arg) for arg in command))
         result = subprocess.run(
-            [
-                'git',
-                '-C',
-                str(repo),
-                'log',
-                '--all',
-                f'--since={date_str} 00:00',
-                f'--until={date_str} 23:59',
-                f'--author={github_username}',
-                '--format=%H|%s|%b',
-                '--patch',
-            ],
+            command,
             capture_output=True,
             text=True,
         )

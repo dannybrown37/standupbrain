@@ -1,5 +1,4 @@
 import logging
-from pprint import pformat
 from datetime import datetime
 
 import click
@@ -7,8 +6,8 @@ import click
 from standupbrain.git import get_git_commits
 from standupbrain.llm_init import init_llm
 from standupbrain.llm_prompt import (
-    format_prompt_for_llm,
-    generate_standup_summary,
+    create_standup_summary_llm_prompt,
+    prompt_local_llm,
 )
 from standupbrain.shared import get_previous_workday
 
@@ -25,7 +24,7 @@ log = logging.getLogger(__name__)
 )
 def main(verbosity: str) -> None:
     if verbosity:
-        log.setLevel(verbosity.upper())
+        logging.getLogger().setLevel(verbosity.upper())
 
 
 @main.command()
@@ -42,9 +41,10 @@ def init() -> None:
 )
 @click.option(
     '--github-username',
+    '--author-email',
     '-g',
     '-u',
-    help='GitHub username for the search',
+    help='GitHub username or email for the search',
 )
 def generate(
     date: datetime | None,
@@ -55,12 +55,10 @@ def generate(
         date = get_previous_workday()
         log.debug('Using date: %s', date)
     commits = get_git_commits(date, github_username)
-    log.debug(pformat(commits))
-    log.debug('Found %d commits', len(commits))
     if not commits:
-        click.echo('No commits found for that date')
+        log.error('No commits found for that date')
         return
 
-    prompt = format_prompt_for_llm(commits)
-    summary = generate_standup_summary(prompt)
+    prompt = create_standup_summary_llm_prompt(commits)
+    summary = prompt_local_llm(prompt)
     click.echo(summary)
