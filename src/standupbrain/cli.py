@@ -1,17 +1,13 @@
-import sys
+import click
 
 from standupbrain.llm import init_llm
 
 
+@click.group()
 def main() -> None:
-    if len(sys.argv) < 2:
-        print('Usage: standupbrain <command>')
-        sys.exit(1)
+    pass
 
-    command = sys.argv[1]
 
-    if command == 'init':
-        init_llm()
-    else:
-        print(f'Unknown command: {command}')
-        sys.exit(1)
+@main.command()
+def init() -> None:
+    init_llm()
