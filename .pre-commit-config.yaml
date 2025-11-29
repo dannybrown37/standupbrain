@@ -11,6 +11,19 @@ repos:
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
+        ## Valid prefixes:
+        #feat: - New feature
+        #fix: - Bug fix
+        #docs: - Documentation only
+        #style: - Formatting, no code change
+        #refactor: - Code change that neither fixes nor adds
+        #perf: - Performance improvement
+        #test: - Adding/fixing tests
+        #build: - Build system/dependencies
+        #ci: - CI configuration
+        #chore: - Maintenance tasks
+        #revert: - Reverts previous commit
+
 
   - repo: local
     hooks:
