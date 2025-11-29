@@ -30,7 +30,8 @@ Usage: standupbrain [OPTIONS] COMMAND [ARGS]...
   CLI for standupbrain, the tool to help you remember what you did yesterday
 
 Options:
-  --help  Show this message and exit.
+  --version  Show the version and exit.
+  --help     Show this message and exit.
 
 Commands:
   init    Initialize standupbrain with your preferred LLM and GitHub/Jira...

@@ -35,7 +35,8 @@ packages = ["src/standupbrain"]
 name = "cz_conventional_commits"
 version = "0.1.0"
 version_files = [
-    "pyproject.toml:version"
+    "pyproject.toml:version",
+    "pyproject.toml:tool.commitizen.version"
 ]
 tag_format = "v$version"
 

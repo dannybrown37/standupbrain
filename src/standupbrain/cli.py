@@ -20,6 +20,7 @@ log = logging.getLogger(__name__)
 
 
 @click.group()
+@click.version_option()
 def main() -> None:
     """CLI for standupbrain, the tool to help you remember what you did yesterday"""
 
