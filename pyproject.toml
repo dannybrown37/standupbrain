@@ -41,6 +41,19 @@ version_files = [
 ]
 tag_format = "v$version"
 
+[tool.commitizen.bump_map]
+feat = "MINOR"
+fix = "PATCH"
+perf = "PATCH"
+refactor = "PATCH"
+docs = "PATCH"
+style = "PATCH"
+test = "PATCH"
+build = "PATCH"
+ci = "PATCH"
+chore = "PATCH"
+revert = "PATCH"
+
 
 [tool.ruff]
 line-length = 88
