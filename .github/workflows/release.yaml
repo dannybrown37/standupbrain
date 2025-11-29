@@ -27,6 +27,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           uvx --from commitizen cz bump --yes
+          uv lock
+          git add uv.lock
+          git commit --amend --no-edit
           git push
           git push --tags
 
