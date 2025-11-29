@@ -1,6 +1,6 @@
 [project]
 name = "standupbrain"
-version = "1.0.1"
+version = "1.0.2"
 description = "What the heck did I do yesterday?"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -34,7 +34,7 @@ packages = ["src/standupbrain"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "1.0.1"
+version = "1.0.2"
 version_files = [
     "pyproject.toml:version",
     "pyproject.toml:tool.commitizen.version"
