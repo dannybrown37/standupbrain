@@ -1,6 +1,6 @@
 import random
-import pytest
 
+import pytest
 
 skip_90_percent_for_slower_tests = pytest.mark.skipif(
     random.random() > 0.1,  # noqa: PLR2004

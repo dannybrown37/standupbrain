@@ -7,7 +7,7 @@ import time
 
 import click
 
-from standupbrain.shared import get_ollama_model, get_config_path
+from standupbrain.shared import get_config_path, get_ollama_model
 
 log = logging.getLogger(__name__)
 

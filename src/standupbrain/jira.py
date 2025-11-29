@@ -1,13 +1,12 @@
-from datetime import datetime
 import logging
 import sys
+from datetime import datetime
 from urllib.parse import urljoin
 
 import requests
 from requests.auth import HTTPBasicAuth
 
 from standupbrain.jira_init import get_jira_credentials
-
 
 log = logging.getLogger(__name__)
 
