@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   release:
@@ -28,7 +28,4 @@ jobs:
         run: uv build
 
       - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: uv run twine upload dist/*
+        uses: pypa/gh-action-pypi-publish@release/v1
