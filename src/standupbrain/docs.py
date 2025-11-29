@@ -1,5 +1,11 @@
 import subprocess
+import sys
+from os import environ as env
 from pathlib import Path
+
+IS_CI = env.get('CI')
+if IS_CI:
+    sys.exit(0)
 
 
 def update_readme_with_help(
