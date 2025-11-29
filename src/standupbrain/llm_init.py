@@ -155,10 +155,10 @@ def get_installed_models() -> set[str]:
 
 def init_model() -> bool:
     click.echo('Setting up model...\n')
-    preferences = get_ollama_model()
+    preferred_model = get_ollama_model()
 
-    if preferences:
-        click.echo(f'✓ Preferences already set (model: {preferences["ollama_model"]})')
+    if preferred_model:
+        click.echo(f'✓ Preferences already set (model: {preferred_model})')
         if not click.confirm('Review/overwrite existing preferences?', default=False):
             click.echo('Keeping existing preferences')
             return True
