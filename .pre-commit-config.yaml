@@ -6,7 +6,10 @@ repos:
     hooks:
       - id: ruff-check
         args: [--fix]
+        stages: [pre-commit]
       - id: ruff-format
+        stages: [pre-commit]
+
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.6.0
@@ -34,6 +37,8 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+        stages: [pre-commit]
+
 
       - id: docs
         name: docs
@@ -41,3 +46,4 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+        stages: [pre-commit]
