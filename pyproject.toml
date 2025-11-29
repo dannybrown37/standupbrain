@@ -103,7 +103,7 @@ inline-quotes = "single"
 "src/standupbrain/llm_init.py" = [
     "TRY300",  # these seem well placed to me
 ]
-"tests/git_init_test.py" = [
+"tests/unit/git_init_test.py" = [
     "ARG001",  # these tests have unused args
     "S105",  # this is a mock secret, nothing to worry about here
 ]
