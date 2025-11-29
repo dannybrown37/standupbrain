@@ -20,30 +20,15 @@ log = logging.getLogger(__name__)
 
 
 @click.group()
-def main() -> None: ...
+def main() -> None:
+    """CLI for standupbrain, the tool to help you remember what you did yesterday"""
 
 
 @main.command()
 def init() -> None:
+    """Initialize standupbrain with your preferred LLM and GitHub/Jira credentials"""
     init_llm()
     init_jira()
-
-
-# region Temp
-@main.command()
-@click.option(
-    '--date',
-    '-d',
-    type=click.DateTime(formats=['%Y-%m-%d']),
-    help='Specific date to generate update for (YYYY-MM-DD)',
-)
-def jira(date: str) -> None:
-    logging.getLogger().setLevel(logging.DEBUG)
-    summary = make_jira_activity_summary(date)
-    click.echo(summary)
-
-
-# endregion
 
 
 @main.command()
@@ -74,12 +59,13 @@ def jira(date: str) -> None:
     default=False,
     help='High verbosity for debugging',
 )
-def generate(
+def recall(
     date: datetime | None,
     dry_run: bool,
     github_username: str,
     verbose: bool,
 ) -> None:
+    """Generate a summary of what you did yesterday via GitHub/Jira -> LLM"""
     if verbose or dry_run:
         logging.getLogger().setLevel(logging.DEBUG)
 

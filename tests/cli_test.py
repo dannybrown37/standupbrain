@@ -40,7 +40,7 @@ def mock_dependencies() -> Generator:
         (None, None),
     ],
 )
-def test_generate_with_date(
+def test_recall_with_date(
     runner: CliRunner,
     mock_dependencies: dict,
     date_arg: str | None,
@@ -52,7 +52,7 @@ def test_generate_with_date(
     mock_dependencies['jira'].return_value = 'jira summary'
     mock_dependencies['llm'].return_value = 'standup output'
 
-    args = ['generate']
+    args = ['recall']
     if date_arg:
         args.extend(['--date', date_arg])
 
@@ -66,24 +66,24 @@ def test_generate_with_date(
         assert actual_date == expected_date_used
 
 
-def test_generate_dry_run(runner: CliRunner, mock_dependencies: dict) -> None:
+def test_recall_dry_run(runner: CliRunner, mock_dependencies: dict) -> None:
     mock_dependencies['commits'].return_value = [
         {'repo': 'test-repo', 'output': 'commit message here'},
     ]
     mock_dependencies['jira'].return_value = 'jira summary'
 
-    result = runner.invoke(main, ['generate', '--dry-run'])
+    result = runner.invoke(main, ['recall', '--dry-run'])
 
     assert result.exit_code == 0
     assert 'not prompting LLM' in result.output
     mock_dependencies['llm'].assert_not_called()
 
 
-def test_generate_no_data(runner: CliRunner, mock_dependencies: dict) -> None:
+def test_recall_no_data(runner: CliRunner, mock_dependencies: dict) -> None:
     mock_dependencies['commits'].return_value = []
     mock_dependencies['jira'].return_value = ''
 
-    result = runner.invoke(main, ['generate'])
+    result = runner.invoke(main, ['recall'])
 
     assert result.exit_code == 0
     assert 'No commits or Jira' in result.output
