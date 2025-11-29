@@ -29,5 +29,6 @@ def prompt_local_llm(prompt: str) -> str:
     result = subprocess.run(
         ['ollama', 'run', get_ollama_model(), prompt],
         check=True,
+        capture_output=True,
     )
-    return result.stdout
+    return result.stdout.strip().decode()
