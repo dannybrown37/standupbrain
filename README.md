@@ -24,7 +24,7 @@ Check out the various `--help` options below:
 <!-- CLI_HELP_START -->
 ## `standupbrain --help`
 
-```bash
+```text
 Usage: standupbrain [OPTIONS] COMMAND [ARGS]...
 
   CLI for standupbrain, the tool to help you remember what you did yesterday
@@ -40,7 +40,7 @@ Commands:
 
 ## `standupbrain init --help`
 
-```bash
+```text
 Usage: standupbrain init [OPTIONS]
 
   Initialize standupbrain with your preferred LLM and GitHub/Jira credentials
@@ -51,7 +51,7 @@ Options:
 
 ## `standupbrain recall --help`
 
-```bash
+```text
 Usage: standupbrain recall [OPTIONS]
 
   Generate a summary of what you did yesterday via GitHub/Jira -> LLM

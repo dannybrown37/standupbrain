@@ -22,7 +22,7 @@ def update_readme_with_help(
             check=True,
         )
         cmd_str = ' '.join(cmd)
-        help_sections.append(f'## `{cmd_str} --help`\n\n```bash\n{result.stdout}```')
+        help_sections.append(f'## `{cmd_str} --help`\n\n```text\n{result.stdout}```')
 
     help_content = '\n\n'.join(help_sections)
 
