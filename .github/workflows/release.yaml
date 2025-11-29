@@ -20,7 +20,7 @@ jobs:
 
       - name: Bump version
         run: |
-          uvx cz bump --yes
+          uvx --from commitizen cz bump --yes
           git push
           git push --tags
 
