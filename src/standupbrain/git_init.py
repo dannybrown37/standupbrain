@@ -117,3 +117,22 @@ def install_gh() -> None:
         sys.exit(1)
 
     click.echo('✓ GitHub CLI installed')
+
+
+def ensure_gh_authenticated() -> bool:
+    try:
+        result = subprocess.run(
+            ['gh', 'auth', 'status'],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            return True
+        click.echo('⚠ GitHub CLI not authenticated')
+        if click.confirm('Authenticate now?', default=True):
+            subprocess.run(['gh', 'auth', 'login'], check=True)
+            return True
+    except FileNotFoundError:
+        return False
+    return False

@@ -1,10 +1,16 @@
 import logging
+import sys
 from datetime import datetime
 
 import click
 
 from standupbrain.git import get_git_commits
-from standupbrain.git_init import get_local_git_email, get_remote_gh_username, init_git
+from standupbrain.git_init import (
+    ensure_gh_authenticated,
+    get_local_git_email,
+    get_remote_gh_username,
+    init_git,
+)
 from standupbrain.jira import make_jira_activity_summary
 from standupbrain.jira_init import init_jira
 from standupbrain.llm import (
@@ -79,6 +85,10 @@ def recall(
         log.debug('No date provided, using previous workday')
         date = get_previous_workday()
         log.debug('Using date: %s', date)
+
+    if not ensure_gh_authenticated():
+        click.echo('gh CLI must be authorized, please try again.')
+        sys.exit(1)
 
     if not github_username:
         github_username = get_remote_gh_username()
