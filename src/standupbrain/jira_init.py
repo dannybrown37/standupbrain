@@ -54,4 +54,7 @@ def get_jira_credentials() -> tuple[str, str, str] | None:
         return None
 
     data = json.loads(config_path.read_text())
-    return data.get('root_url'), data.get('email'), data.get('api_token')
+    url, email, token = data.get('root_url'), data.get('email'), data.get('api_token')
+    if url is None or email is None or token is None:
+        return None
+    return url, email, token
