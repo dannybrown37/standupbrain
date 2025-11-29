@@ -9,13 +9,13 @@ def get_config_path() -> Path:
     return config_dir / 'credentials.json'
 
 
-def get_preferences() -> dict | None:
+def get_ollama_model() -> dict | None:
     config_path = get_config_path()
     if not config_path.exists():
         return None
 
     data = json.loads(config_path.read_text())
-    return data if 'ollama_model' in data else None
+    return data.get('ollama_model', 'llama3.2:3b')
 
 
 def get_previous_workday() -> datetime:
@@ -24,8 +24,3 @@ def get_previous_workday() -> datetime:
     if today.weekday() == 0:
         return today - datetime.timedelta(days=3)
     return today - datetime.timedelta(days=1)
-
-
-def get_ollama_model() -> str:
-    _preferences = get_preferences()
-    return _preferences['ollama_model'] if _preferences else 'llama3.2:3b'

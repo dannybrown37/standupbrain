@@ -7,7 +7,7 @@ import time
 
 import click
 
-from standupbrain.shared import get_ollama_model, get_config_path, get_preferences
+from standupbrain.shared import get_ollama_model, get_config_path
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ def init_llm() -> None:
         log.error('Failed to start Ollama server.')
         sys.exit(1)
 
-    if not init_preferences():
+    if not init_model():
         log.error('Failed to set preferences.')
         sys.exit(1)
 
@@ -153,9 +153,9 @@ def get_installed_models() -> set[str]:
         return set()
 
 
-def init_preferences() -> bool:
-    click.echo('Setting up preferences...\n')
-    preferences = get_preferences()
+def init_model() -> bool:
+    click.echo('Setting up model...\n')
+    preferences = get_ollama_model()
 
     if preferences:
         click.echo(f'✓ Preferences already set (model: {preferences["ollama_model"]})')
