@@ -1,5 +1,7 @@
 import json
+import platform
 import subprocess
+import sys
 
 import click
 
@@ -8,6 +10,15 @@ from standupbrain.shared import get_config_path
 
 def init_git() -> None:
     click.echo('Setting up Git/GitHub configuration...\n')
+
+    if not is_gh_installed():
+        click.echo('⚠ GitHub CLI (gh) not found')
+        click.echo('Installation details: https://cli.github.com/')
+        if click.confirm('Install GitHub CLI now?', default=True):
+            install_gh()
+        elif not click.confirm('Continue without gh?', default=False):
+            raise click.Abort
+
     credentials = get_git_credentials()
     git_email, gh_username = None, None
 
@@ -81,3 +92,28 @@ def get_remote_gh_username() -> str | None:
         return result.stdout.strip() or None
     except FileNotFoundError:
         return None
+
+
+def is_gh_installed() -> bool:
+    try:
+        subprocess.run(['gh', '--version'], capture_output=True, check=True)
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return False
+    return True
+
+
+def install_gh() -> None:
+    system = platform.system()
+
+    if system == 'Darwin':
+        subprocess.run(['brew', 'install', 'gh'], check=True)
+    elif system == 'Linux':
+        subprocess.run(['sudo', 'apt-get', 'update'], check=True)
+        subprocess.run(['sudo', 'apt-get', 'install', '-y', 'gh'], check=True)
+    elif system == 'Windows':
+        subprocess.run(['winget', 'install', '--id', 'GitHub.cli'], check=True)
+    else:
+        click.echo(f'❌ Unsupported platform: {system}')
+        sys.exit(1)
+
+    click.echo('✓ GitHub CLI installed')
