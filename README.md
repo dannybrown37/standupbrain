@@ -12,8 +12,10 @@ uv tool install standupbrain
 
 ### Quickstart
 
+* [Configure your GitHub credentials locally](https://docs.github.com/en/get-started/git-basics/set-up-git)
 * Run `standupbrain init` to set up or reset your GitHub username, Git author email, Jira credentials, and preferred LLM model.
 * Run `standupbrain recall` to generate your standup summary.
+  * Run `--help` or see below for additional options
 
 ### Help Commands
 
