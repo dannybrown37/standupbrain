@@ -20,6 +20,8 @@ jobs:
 
       - name: Bump version
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           uvx --from commitizen cz bump --yes
           git push
           git push --tags

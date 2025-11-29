@@ -13,7 +13,6 @@ def get_ollama_model() -> dict | None:
     config_path = get_config_path()
     if not config_path.exists():
         return None
-
     data = json.loads(config_path.read_text())
     return data.get('ollama_model', 'llama3.2:3b')
 
