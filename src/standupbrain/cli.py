@@ -102,7 +102,7 @@ def generate(
 
     jira_summary = make_jira_activity_summary(date)
     if not commits and not jira_summary:
-        log.error('No commits or Jira found for %s', date)
+        click.echo(f'No commits or Jira found for {date}')
         return
 
     prompt = create_standup_summary_llm_prompt(jira_summary, commits)
