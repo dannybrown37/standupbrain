@@ -33,6 +33,7 @@ packages = ["src/standupbrain"]
 
 
 [tool.commitizen]
+name = "cz_customize"
 version = "1.0.2"
 version_files = [
     "pyproject.toml:version",
@@ -40,18 +41,21 @@ version_files = [
 ]
 tag_format = "v$version"
 
-[tool.commitizen.bump_map]
-feat = "MINOR"
-fix = "PATCH"
-perf = "PATCH"
-refactor = "PATCH"
-docs = "PATCH"
-style = "PATCH"
-test = "PATCH"
-build = "PATCH"
-ci = "PATCH"
-chore = "PATCH"
-revert = "PATCH"
+[tool.commitizen.customize]
+bump_pattern = "^(feat|fix|perf|refactor|docs|style|test|build|ci|chore|revert)"
+
+[tool.commitizen.customize.bump_map]
+"feat" = "MINOR"
+"fix" = "PATCH"
+"perf" = "PATCH"
+"refactor" = "PATCH"
+"docs" = "PATCH"
+"style" = "PATCH"
+"test" = "PATCH"
+"build" = "PATCH"
+"ci" = "PATCH"
+"chore" = "PATCH"
+"revert" = "PATCH"
 
 
 [tool.ruff]
