@@ -14,3 +14,10 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: docs
+        name: docs
+        entry: uv run src/standupbrain/docs.py
+        language: system
+        pass_filenames: false
+        always_run: true
