@@ -9,13 +9,17 @@ from pprint import pformat
 log = logging.getLogger(__name__)
 
 
-def get_git_commits(date: datetime, github_username: str) -> list[dict]:
+def get_git_commits(
+    date: datetime,
+    github_username: str,
+    author_email: str,
+) -> list[dict]:
     """Get commit diffs for a given date/GH username"""
     date_str = date.strftime('%Y-%m-%d')
     log.debug('Getting commits for %s', date_str)
     affected_repos = get_affected_repos(date_str, github_username)
     log.debug('Affected repos: %s', affected_repos)
-    commits = get_git_commits_local(affected_repos, date_str, github_username)
+    commits = get_git_commits_local(affected_repos, date_str, author_email)
     log.debug(pformat(commits))
     log.debug('Found %d commits', len(commits))
     return commits
@@ -63,7 +67,7 @@ def get_affected_repos(date_str: str, github_username: str) -> set[str]:
 def get_git_commits_local(
     affected_repos: set[str],
     date_str: str,
-    github_username: str,
+    author_email: str,
 ) -> list[dict]:
     projects_dir = Path.home() / 'projects'
     all_commits = []
@@ -83,7 +87,7 @@ def get_git_commits_local(
             '--branches',
             f'--since={date_str} 00:00',
             f'--until={date_str} 23:59',
-            f'--author={github_username}',
+            f'--author={author_email}',
             '--format=%H|%s|%b',
             '--patch',
         ]

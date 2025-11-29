@@ -1,11 +1,10 @@
 import logging
-import subprocess
 from datetime import datetime
 
 import click
 
 from standupbrain.git import get_git_commits
-from standupbrain.git_init import init_git
+from standupbrain.git_init import get_local_git_email, get_remote_gh_username, init_git
 from standupbrain.jira import make_jira_activity_summary
 from standupbrain.jira_init import init_jira
 from standupbrain.llm import (
@@ -35,6 +34,11 @@ def init() -> None:
 
 @main.command()
 @click.option(
+    '--author-email',
+    '-e',
+    help='Git author email for searching local commits',
+)
+@click.option(
     '--date',
     '-d',
     type=click.DateTime(formats=['%Y-%m-%d']),
@@ -49,10 +53,8 @@ def init() -> None:
 )
 @click.option(
     '--github-username',
-    '--author-email',
-    '-g',
     '-u',
-    help='GitHub username or email for the search',
+    help='GitHub account username for searching remotes in GitHub',
 )
 @click.option(
     '--verbose',
@@ -62,6 +64,7 @@ def init() -> None:
     help='High verbosity for debugging',
 )
 def recall(
+    author_email: str | None,
     date: datetime | None,
     dry_run: bool,
     github_username: str,
@@ -77,16 +80,14 @@ def recall(
         log.debug('Using date: %s', date)
 
     if not github_username:
-        result = subprocess.run(
-            ['gh', 'api', 'user', '--jq', '.login'],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        github_username = result.stdout.strip()
-        log.debug('No GitHub username, using local GitHub username %s', github_username)
+        github_username = get_remote_gh_username()
+        click.echo(f'No GitHub username, using local GitHub username {github_username}')
 
-    commits = get_git_commits(date, github_username)
+    if not author_email:
+        author_email = get_local_git_email()
+        click.echo(f'No Git author email, using local Git author email {author_email}')
+
+    commits = get_git_commits(date, github_username, author_email)
 
     jira_summary = make_jira_activity_summary(date)
     if not commits and not jira_summary:

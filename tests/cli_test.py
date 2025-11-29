@@ -19,16 +19,19 @@ def mock_dependencies() -> Generator:
         patch('standupbrain.cli.get_git_commits') as mock_commits,
         patch('standupbrain.cli.make_jira_activity_summary') as mock_jira,
         patch('standupbrain.cli.prompt_local_llm') as mock_llm,
-        patch('standupbrain.cli.subprocess.run') as mock_subprocess,
+        patch('standupbrain.cli.get_remote_gh_username') as mock_username,
+        patch('standupbrain.cli.get_local_git_email') as mock_email,
         patch('standupbrain.cli.get_previous_workday') as mock_prev_day,
     ):
-        mock_subprocess.return_value = Mock(stdout='test-user\n')
+        mock_username.return_value = Mock(stdout='test-user\n')
+        mock_email.return_value = Mock(stdout='test-email@test.com\n')
         mock_prev_day.return_value = datetime(2024, 1, 15)
         yield {
             'commits': mock_commits,
             'jira': mock_jira,
             'llm': mock_llm,
-            'subprocess': mock_subprocess,
+            'username': mock_username,
+            'email': mock_email,
             'prev_day': mock_prev_day,
         }
 

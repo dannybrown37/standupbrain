@@ -19,7 +19,7 @@ def init_git() -> None:
         git_email, gh_username = credentials
     else:
         git_email = get_local_git_email()
-        gh_username = get_local_gh_username()
+        gh_username = get_remote_gh_username()
 
     git_email = click.prompt('Git author email', type=str, default=git_email).strip()
     gh_username = click.prompt('GitHub username', type=str, default=gh_username).strip()
@@ -70,7 +70,7 @@ def get_local_git_email() -> str | None:
         return None
 
 
-def get_local_gh_username() -> str | None:
+def get_remote_gh_username() -> str | None:
     try:
         result = subprocess.run(
             ['gh', 'api', 'user', '--jq', '.login'],

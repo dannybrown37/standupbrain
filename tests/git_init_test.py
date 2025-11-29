@@ -54,7 +54,7 @@ def test_get_git_credentials(
 @patch('standupbrain.git_init.click.prompt')
 @patch('standupbrain.git_init.click.confirm')
 @patch('standupbrain.git_init.get_local_git_email')
-@patch('standupbrain.git_init.get_local_gh_username')
+@patch('standupbrain.git_init.get_remote_gh_username')
 def test_init_git_new_config(
     mock_gh_username: Mock,
     mock_git_email: Mock,
@@ -124,7 +124,7 @@ def test_init_git_existing_overwrite(
 @patch('standupbrain.git_init.click.prompt')
 @patch('standupbrain.git_init.click.confirm')
 @patch('standupbrain.git_init.get_local_git_email')
-@patch('standupbrain.git_init.get_local_gh_username')
+@patch('standupbrain.git_init.get_remote_gh_username')
 def test_init_git_preserves_other_config(
     mock_gh_username: Mock,
     mock_git_email: Mock,

@@ -78,21 +78,23 @@ def test_get_git_commits_local(
 
 
 @pytest.mark.parametrize(
-    ('date', 'username', 'affected_repos', 'commits', 'expected_count'),
+    ('date', 'username', 'email', 'affected_repos', 'commits', 'expected_count'),
     [
         (
             datetime(2024, 1, 15),
             'testuser',
+            'test@test.com',
             {'repo1'},
             [{'repo': 'repo1', 'output': 'commit data'}],
             1,
         ),
-        (datetime(2024, 1, 15), 'testuser', set(), [], 0),
+        (datetime(2024, 1, 15), 'testuser', 'test@test.com', set(), [], 0),
     ],
 )
 def test_get_git_commits(
     date: datetime,
     username: str,
+    email: str,
     affected_repos: set[str],
     commits: list[dict],
     expected_count: int,
@@ -107,8 +109,8 @@ def test_get_git_commits(
             return_value=commits,
         ) as mock_local,
     ):
-        result = get_git_commits(date, username)
+        result = get_git_commits(date, username, email)
 
     mock_repos.assert_called_once_with('2024-01-15', username)
-    mock_local.assert_called_once_with(affected_repos, '2024-01-15', username)
+    mock_local.assert_called_once_with(affected_repos, '2024-01-15', email)
     assert len(result) == expected_count
