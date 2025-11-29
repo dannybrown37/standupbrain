@@ -5,6 +5,7 @@ import subprocess
 import click
 
 from standupbrain.git import get_git_commits
+from standupbrain.git_init import init_git
 from standupbrain.jira import make_jira_activity_summary
 from standupbrain.jira_init import init_jira
 from standupbrain.llm_init import init_llm
@@ -27,6 +28,7 @@ def main() -> None:
 @main.command()
 def init() -> None:
     """Initialize standupbrain with your preferred LLM and GitHub/Jira credentials"""
+    init_git()
     init_llm()
     init_jira()
 

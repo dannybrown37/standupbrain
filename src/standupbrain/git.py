@@ -10,6 +10,7 @@ log = logging.getLogger(__name__)
 
 
 def get_git_commits(date: datetime, github_username: str) -> list[dict]:
+    """Get commit diffs for a given date/GH username"""
     date_str = date.strftime('%Y-%m-%d')
     log.debug('Getting commits for %s', date_str)
     affected_repos = get_affected_repos(date_str, github_username)
